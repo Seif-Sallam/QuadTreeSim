@@ -11,7 +11,7 @@ public:
     QuadTree(const sf::FloatRect &boundry);
     bool Insert(Particle *particle);
 
-    void Render(sf::RenderWindow &window);
+    void Render(sf::RenderWindow &window, bool renderPoints);
     void Clean();
     ~QuadTree();
 

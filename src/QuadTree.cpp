@@ -69,7 +69,7 @@ void QuadTree::SubDivide()
     m_Divided = true;
 }
 
-void QuadTree::Render(sf::RenderWindow &window)
+void QuadTree::Render(sf::RenderWindow &window, bool renderPoints)
 {
     sf::RectangleShape shape;
     shape.setFillColor(sf::Color::Transparent);
@@ -78,17 +78,18 @@ void QuadTree::Render(sf::RenderWindow &window)
     shape.setPosition(m_Boundry.left, m_Boundry.top);
     shape.setSize(sf::Vector2f(m_Boundry.width, m_Boundry.height));
     window.draw(shape);
-    for (int i = 0; i < points.size(); i++)
-    {
-        if (points[i] != nullptr)
-            points[i]->Render(window);
-    }
+    if (renderPoints)
+        for (int i = 0; i < points.size(); i++)
+        {
+            if (points[i] != nullptr)
+                points[i]->Render(window);
+        }
     if (m_Divided)
     {
-        this->m_NorthEast->Render(window);
-        this->m_NorthWest->Render(window);
-        this->m_SouthEast->Render(window);
-        this->m_SouthWest->Render(window);
+        this->m_NorthEast->Render(window, renderPoints);
+        this->m_NorthWest->Render(window, renderPoints);
+        this->m_SouthEast->Render(window, renderPoints);
+        this->m_SouthWest->Render(window, renderPoints);
     }
 }
 

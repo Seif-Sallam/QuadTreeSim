@@ -41,13 +41,17 @@ int main()
         {
             ImGui::SFML::ProcessEvent(event);
 
-            if (event.type == sf::Event::Closed || event.key.code == sf::Keyboard::Escape)
+            if (event.type == sf::Event::Closed || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape))
                 window.close();
         }
+        static bool renderPoints = true;
+        static bool addWithMouse = false;
         ImGui::SFML::Update(window, dt);
         {
             ImGui::Begin("Test Window");
             ImGui::Text("Current Number Of Particles %d", index);
+            ImGui::Checkbox("Render Points", &renderPoints);
+            ImGui::Checkbox("Add With Mouse", &addWithMouse);
             if (ImGui::Button("Add Particle") && index < numberOfParticles)
             {
                 sf::Vector2f position = GenerateRandomV2f(sf::Vector2f(0.f, 0.f), sf::Vector2f(g_WindowRes.x, g_WindowRes.y));
@@ -68,10 +72,21 @@ int main()
 
             ImGui::End();
         }
+        if (addWithMouse)
+        {
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+            {
+                sf::Vector2f mousePosition = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+                sf::Vector2f position = GenerateRandomV2f(mousePosition, sf::Vector2f(mousePosition.x + rand() % 10, mousePosition.y + rand() % 10));
 
+                particles[index] = new Particle(position, particleSize);
+                qt.Insert(particles[index]);
+                index++;
+            }
+        }
         window.clear();
         ImGui::SFML::Render(window);
-        qt.Render(window);
+        qt.Render(window, renderPoints);
         window.display();
     }
     for (int i = 0; i < numberOfParticles; i++)
