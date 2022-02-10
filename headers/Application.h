@@ -7,6 +7,7 @@
 #include <vector>
 #include <array>
 #include <algorithm>
+#include "TestMenu.h"
 
 class Application
 {
@@ -15,6 +16,7 @@ public:
     Application(Application &) = delete;
     void Run();
     static const sf::Vector2u GetWindowRes();
+    static const sf::Vector2f GetMousePos();
     ~Application();
 
 private:
@@ -27,7 +29,9 @@ private:
     void Render();
 
 private:
-    sf::RenderWindow *m_Window;
+    TestMenu *m_TestMenu;
+    Test *m_CurrentTest;
+    static sf::RenderWindow *m_Window;
     sf::View m_View;
     static sf::Vector2u s_WindowRes;
     sf::Clock m_Clock;
