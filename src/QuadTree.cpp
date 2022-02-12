@@ -5,7 +5,7 @@
 QuadTree::QuadTree(const sf::FloatRect &boundry)
     : m_Boundry(boundry)
 {
-    for (auto &point : points)
+    for (auto &point : m_Points)
         point = nullptr;
 }
 
@@ -18,7 +18,7 @@ bool QuadTree::Insert(Particle *particle)
             return false;
         if (m_NumberOfElements < 4)
         {
-            points[m_NumberOfElements] = particle;
+            m_Points[m_NumberOfElements] = particle;
             m_NumberOfElements++;
             return true;
         }
@@ -79,10 +79,10 @@ void QuadTree::Render(sf::RenderWindow &window, bool renderPoints)
     shape.setSize(sf::Vector2f(m_Boundry.width, m_Boundry.height));
     window.draw(shape);
     if (renderPoints)
-        for (int i = 0; i < points.size(); i++)
+        for (int i = 0; i < m_Points.size(); i++)
         {
-            if (points[i] != nullptr)
-                points[i]->Render(window);
+            if (m_Points[i] != nullptr)
+                m_Points[i]->Render(window);
         }
     if (m_Divided)
     {
@@ -107,11 +107,36 @@ void QuadTree::Clean()
         delete m_SouthWest;
         m_Divided = false;
     }
-    for (int i = 0; i < points.size(); i++)
-        points[i] = nullptr;
+    for (int i = 0; i < m_Points.size(); i++)
+        m_Points[i] = nullptr;
 }
 
 QuadTree::~QuadTree()
 {
     Clean();
+}
+
+void QuadTree::Query(const sf::FloatRect &range, std::vector<Particle *> &foundParticles, int *count)
+{
+    if (!this->m_Boundry.intersects(range))
+        return;
+    for (int i = 0; i < m_Points.size(); i++)
+    {
+        if (m_Points[i] != nullptr)
+        {
+            if (count != nullptr)
+                *count = *count + 1;
+
+            if (range.contains(m_Points[i]->GetPosition()))
+                foundParticles.push_back(m_Points[i]);
+        }
+    }
+
+    if (m_Divided)
+    {
+        m_NorthEast->Query(range, foundParticles, count);
+        m_NorthWest->Query(range, foundParticles, count);
+        m_SouthEast->Query(range, foundParticles, count);
+        m_SouthWest->Query(range, foundParticles, count);
+    }
 }

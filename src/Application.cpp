@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "TestMouseAdding.h"
+#include "QuadTreeQueryTest.h"
 
 sf::Vector2u Application::s_WindowRes = sf::Vector2u(800, 600);
 sf::RenderWindow *Application::m_Window = nullptr;
@@ -57,7 +58,9 @@ Application::~Application()
 
 bool Application::InitWindow()
 {
-    m_Window = new sf::RenderWindow(sf::VideoMode(s_WindowRes.x, s_WindowRes.y), "QuadTree Sim", sf::Style::Titlebar);
+    sf::ContextSettings settings;
+    settings.antialiasingLevel = 8;
+    m_Window = new sf::RenderWindow(sf::VideoMode(s_WindowRes.x, s_WindowRes.y), "QuadTree Sim", sf::Style::Titlebar, settings);
     if (m_Window == nullptr)
     {
         std::cerr << "Couldn't Initialize Window!\n";
@@ -76,6 +79,7 @@ bool Application::InitAppStates()
     m_CurrentTest = m_TestMenu;
 
     m_TestMenu->RegisterTest<TestMouseAdding>("Test Adding with Mouse");
+    m_TestMenu->RegisterTest<QuadTreeQueryTest>("Quad-Tree Query");
     return true;
 }
 
