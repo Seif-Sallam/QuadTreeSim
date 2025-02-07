@@ -12,6 +12,8 @@ TestMouseAdding::TestMouseAdding()
 
 void TestMouseAdding::Update(const sf::Time &dt)
 {
+    if (ImGui::GetIO().WantCaptureMouse)
+        return;
     sf::Vector2f mousePos = Application::GetMousePos();
     if (m_ParticlesNum < m_MaxParticlesNum)
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left))

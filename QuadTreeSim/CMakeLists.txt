@@ -16,9 +16,24 @@ target_include_directories(
     ./headers/
 )
 
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    set_target_properties(QuadTreeSim PROPERTIES LINK_FLAGS "/ENTRY:mainCRTStartup")
+endif()
+
+
+set(OS_LIBRARIES
+    opengl32
+)
+
+if (UNIX)
+    set(OS_LIBRARIES
+        GL
+    )
+endif()
+
 target_link_libraries(QuadTreeSim
     PRIVATE
-    GL
+    ${OS_LIBRARIES}
     imgui
     sfml-graphics
     sfml-window
